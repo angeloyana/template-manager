@@ -1,0 +1,25 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "placeholders": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "prompt": { "type": "string" },
+          "default": { "type": "string" },
+          "short_instruction": { "type": "string" },
+          "long_instruction": { "type": "string" },
+          "paths": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        },
+        "required": ["name", "prompt", "paths"]
+      }
+    }
+  },
+  "required": ["placeholders"]
+}

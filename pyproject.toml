@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "template_manager"
+description = "A command-line tool used to create reusable template for different programming stack."
+readme = "README.md"
+requires-python = ">=3.8"
+license = {file = "LICENSE"}
+authors = [
+  {name = "Angelo Yana", email = "angelocyana@gmail.com"}
+]
+classifiers = [
+  "Environment :: Console",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11"
+]
+dependencies = [
+  "click>=8.1.7",
+  "InquirerPy>=0.3.4",
+  "Jinja2>=3.1.4",
+  "jsonschema>=4.23.0"
+]
+dynamic = ["version"]
+
+[project.urls]
+Homepage = "https://github.com/angeloyana/template-manager"
+Repository = "https://github.com/angeloyana/template-manager"
+
+[project.scripts]
+tpm = "template_manager.cli:main"
+
+[tool.setuptools.dynamic]
+version = {attr = "template_manager.__version__"}
+
+[tool.ruff.format]
+quote-style = "single"
+indent-style = "space"
+skip-magic-trailing-comma = false
