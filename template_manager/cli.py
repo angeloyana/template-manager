@@ -71,6 +71,7 @@ def save(template_name: str | None):
         template_name = inquirer.text(
             message='Save as:',
             instruction='Template name',
+            default=Path.cwd().name,
             validate=TemplateNameValidator(),
         ).execute()
 
