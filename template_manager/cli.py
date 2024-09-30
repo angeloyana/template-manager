@@ -163,6 +163,20 @@ def generate(template_name: str | None, output: Path | None):
     print_success(f"'{template_name}' has been generated in {output}", start='\n')
 
 
+@cli.command(name='list', short_help='Show all the templates.')
+def list_command():
+    """Show all the saved templates."""
+    template_files = list(TEMPLATES_DIR.glob('*.zip'))
+    if not template_files:
+        click.echo('There are no template(s) yet.')
+        return
+
+    click.echo('Templates')
+    click.echo('---------')
+    for template_file in template_files:
+        click.echo(template_file.stem)
+
+
 def main() -> None:
     try:
         cli(standalone_mode=False)
