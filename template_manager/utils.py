@@ -1,3 +1,9 @@
+import fnmatch
+import os
+import re
+import zipfile
+from pathlib import Path
+
 import click
 from jsonschema import validate
 from prompt_toolkit.validation import ValidationError, Validator
@@ -70,9 +76,44 @@ def validate_config(instance: dict) -> None:
                     },
                     'required': ['name', 'prompt', 'paths'],
                 },
-            }
+            },
+            'exclude': {'type': 'array', 'items': {'type': 'string'}},
         },
         'required': ['placeholders'],
     }
 
     validate(instance=instance, schema=schema)
+
+
+def _compile_path_patterns(patterns: list[str]) -> list[re.Pattern]:
+    compiled_patterns: list[re.Pattern] = []
+    for pattern in patterns:
+        pattern = Path(pattern).as_posix()
+        compiled_patterns.append(re.compile(fnmatch.translate(pattern)))
+
+    return compiled_patterns
+
+
+def _should_exclude(root: str, basename: str, patterns: list[re.Pattern]) -> bool:
+    for pattern in patterns:
+        if pattern.match(basename) or pattern.match(os.path.join(root, basename)):
+            return True
+    return False
+
+
+def zip_dir(output: str | Path, target_dir: str | Path, exclude: list[str]) -> None:
+    exclude_patterns = _compile_path_patterns(exclude)
+
+    with zipfile.ZipFile(output, 'w') as zf:
+        for root, dirs, files in os.walk(target_dir):
+            rel_root = os.path.relpath(root)
+
+            for dirname in dirs:
+                if _should_exclude(rel_root, dirname, exclude_patterns):
+                    dirs.remove(dirname)
+                else:
+                    zf.writestr(os.path.join(rel_root, dirname) + '/', '')
+
+            for file in files:
+                if not _should_exclude(rel_root, file, exclude_patterns):
+                    zf.write(os.path.join(root, file), os.path.join(rel_root, file))

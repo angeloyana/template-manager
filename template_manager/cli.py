@@ -18,6 +18,7 @@ from template_manager.utils import (
     print_process,
     print_success,
     validate_config,
+    zip_dir,
 )
 
 
@@ -81,7 +82,7 @@ def save(template_name: str | None):
         validate_config(config)  # Raises jsonschema.ValidationError for invalid config.
 
     print_process('Compressing the template...')
-    shutil.make_archive(str(TEMPLATES_DIR / template_name), 'zip', Path.cwd())
+    zip_dir(f'{TEMPLATES_DIR / template_name}.zip', Path.cwd(), config['exclude'])
 
     print_success(f"'{template_name}' has been saved!", start='\n')
 
